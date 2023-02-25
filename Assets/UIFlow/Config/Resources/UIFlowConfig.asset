@@ -13,3 +13,8 @@ MonoBehaviour:
   m_Name: UIFlowConfig
   m_EditorClassIdentifier: 
   genPath: UIFlow/GenCode
+  prefabPath: Resources
+  nameSpaceUse:
+  - UnityEngine.UI
+  - UnityEngine
+  - UIFlow.UIComponent

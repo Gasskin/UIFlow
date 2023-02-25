@@ -29,5 +29,11 @@ namespace UIFlow.Config
 
         [ShowName("代码生成路径")]
         public string genPath;
+
+        [ShowName("Prefab保存路径")]
+        public string prefabPath;
+
+        [ShowName("")]
+        public string[] nameSpaceUse;
     }
 }
