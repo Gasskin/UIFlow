@@ -104,10 +104,12 @@ public class UIComponentEditor : Editor
             return;
         }
 
+        PrefabUtility.ApplyPrefabInstance(gameObject, InteractionMode.AutomatedAction);
+        
         var runtimeName = gameObject.name.Substring(0, gameObject.name.Length - 7);
         var clone = Instantiate(gameObject);
         clone.name = runtimeName;
-
+        
         PrefabUtility.SaveAsPrefabAsset(clone, $"{Application.dataPath}/{config.prefabPath}/{runtimeName}.prefab");
         DestroyImmediate(clone);
         AssetDatabase.SaveAssets();

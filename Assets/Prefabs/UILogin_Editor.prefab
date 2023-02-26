@@ -186,7 +186,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   uiName: UITest
   uiData:
-  - fieldName: Bg
+  - fieldName: bgtest
     componentType: CanvasRenderer
     target: {fileID: 5339517087748522426}
   - fieldName: Confirm
