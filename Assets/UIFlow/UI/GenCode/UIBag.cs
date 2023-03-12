@@ -6,28 +6,28 @@ using UnityEngine.UI;
 using UnityEngine;
 using UIFlow.UIComponent;
 
-public partial class UILogin
+public partial class UIBag
 {
-    private Button Confirm;
-    private Button Cancel;
-    private InputField Input;
+    private RectTransform Bg;
+    private RectTransform Item;
+    private Button Close;
 
     public override bool BindComponent()
     {
         if (prefabInstance == null) 
         {
-            Debug.LogError("UILogin，绑定组件失败，没有实例资源");
+            Debug.LogError("UIBag，绑定组件失败，没有实例资源");
             return false;
         }
         var uiComponent = prefabInstance.GetComponent<UIComponent>();
         if (uiComponent == null)
         {
-            Debug.LogError("UILogin，绑定组件失败，没有实例资源");
+            Debug.LogError("UIBag，绑定组件失败，没有实例资源");
             return false;
         }
-        Confirm =  uiComponent.GetComponent<Button>(0);
-        Cancel =  uiComponent.GetComponent<Button>(1);
-        Input =  uiComponent.GetComponent<InputField>(2);
+        Bg =  uiComponent.GetComponent<RectTransform>(0);
+        Item =  uiComponent.GetComponent<RectTransform>(1);
+        Close =  uiComponent.GetComponent<Button>(2);
         return true;
     }
 }

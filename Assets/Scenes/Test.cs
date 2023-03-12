@@ -9,6 +9,7 @@ public class Test : MonoBehaviour
     void Start()
     {
         UIManager.Instance.Init();
+        UIManager.Instance.Open<UILogin>();
     }
 
     // Update is called once per frame

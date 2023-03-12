@@ -72,11 +72,19 @@ public class UIComponentEditor : Editor
             sb.AppendLine($"    private {componentType} {fieldName};");
         }
         sb.AppendLine();
-        sb.AppendLine("    private void BindComponent(GameObject prefab)");
+        sb.AppendLine("    public override bool BindComponent()");
         sb.AppendLine("    {");
-        sb.AppendLine("        var uiComponent = prefab.GetComponent<UIComponent>();");
+        sb.AppendLine("        if (prefabInstance == null) ");
+        sb.AppendLine("        {");
+        sb.AppendLine($"            Debug.LogError(\"{uiName.stringValue}，绑定组件失败，没有实例资源\");");
+        sb.AppendLine("            return false;");
+        sb.AppendLine("        }");
+        sb.AppendLine("        var uiComponent = prefabInstance.GetComponent<UIComponent>();");
         sb.AppendLine("        if (uiComponent == null)");
-        sb.AppendLine("            return;");
+        sb.AppendLine("        {");
+        sb.AppendLine($"            Debug.LogError(\"{uiName.stringValue}，绑定组件失败，没有实例资源\");");
+        sb.AppendLine("            return false;");
+        sb.AppendLine("        }");
         for (int i = 0; i < uiData.arraySize; i++)
         {
             var data = uiData.GetArrayElementAtIndex(i);
@@ -84,6 +92,7 @@ public class UIComponentEditor : Editor
             var fieldName = data.FindPropertyRelative(nameof(UIComponentData.fieldName)).stringValue;
             sb.AppendLine($"        {fieldName} =  uiComponent.GetComponent<{componentType}>({i});");
         }
+        sb.AppendLine("        return true;");
         sb.AppendLine("    }");
         sb.AppendLine("}");
 
