@@ -10,6 +10,7 @@ public partial class UIWorld
 {
     private Text Name;
     private Button Bag;
+    private RectTransform Money;
 
     public override bool BindComponent()
     {
@@ -25,7 +26,11 @@ public partial class UIWorld
             return false;
         }
         Name =  uiComponent.GetComponent<Text>(0);
+        if (Name == null) return false;
         Bag =  uiComponent.GetComponent<Button>(1);
+        if (Bag == null) return false;
+        Money =  uiComponent.GetComponent<RectTransform>(2);
+        if (Money == null) return false;
         return true;
     }
 }

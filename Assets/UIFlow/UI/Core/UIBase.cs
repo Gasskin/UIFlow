@@ -9,16 +9,15 @@ namespace UIFlow.UI
         protected GameObject prefabInstance;
         protected RectTransform rectTransform;
         protected CanvasGroup canvasGroup;
-        protected List<UIBase> subUI = new List<UIBase>();
-        protected object uiParam;
+        protected Dictionary<int,UISubBase> subUI = new Dictionary<int,UISubBase>();
     #endregion
 
     #region 属性
         public bool IsOpen => canvasGroup.alpha >= 1;
-        public abstract UIType Layer { get; }
-        public UIBase preUI { get; private set; }
+        public virtual bool UseUIStack => false;
 
-        protected abstract string PrefabName { get; }
+        public abstract UIType Layer { get; }
+        public abstract string PrefabName { get; }
     #endregion
 
     #region 生命周期
@@ -27,7 +26,7 @@ namespace UIFlow.UI
             return true;
         }
 
-        public void Load(GameObject prefabInstance)
+        public bool Load(GameObject prefabInstance)
         {
             this.prefabInstance = prefabInstance;
             rectTransform = this.prefabInstance.transform as RectTransform;
@@ -44,39 +43,55 @@ namespace UIFlow.UI
             }
 
             canvasGroup.alpha = 0;
+            if (!BindComponent())
+            {
+                Debug.LogError($"绑定组件失败 {PrefabName}");
+                return false;
+            }
             OnLoad();
+            return true;
         }
 
-        public void Show(UIBase preUI, object uiParam)
+        public void Show()
         {
-            this.preUI = preUI;
             canvasGroup.alpha = 1;
-            if (uiParam != null)
-                this.uiParam = uiParam;
             OnShow();
-            OpenAllSubUI();
+            foreach (var sub in subUI.Values)
+            {
+                sub.Show();
+            }
         }
 
         public void Close()
         {
             canvasGroup.alpha = 0;
+            foreach (var sub in subUI.Values)
+            {
+                sub.Close();
+            }
             OnClose();
-            CloseAllSubUI();
         }
 
         public void Unload()
         {
+            foreach (var sub in subUI.Values)
+            {
+                sub.UnLoad();
+            }
+            OnUnload();
+            subUI.Clear();
             Object.Destroy(prefabInstance);
             prefabInstance = null;
             canvasGroup = null;
-            uiParam = null;
-            subUI.Clear();
-            OnUnload();
         }
 
         public void Update()
         {
             OnUpdate();
+            foreach (var sub in subUI.Values)
+            {
+                sub.Update();
+            }
         }
 
         protected virtual void OnLoad()
@@ -101,23 +116,39 @@ namespace UIFlow.UI
     #endregion
 
     #region 接口方法
-        protected void AddSubUI<T>(Transform uiRoot) where T : UIBase, new()
+        protected void AddSubUI<T>(RectTransform uiRoot) where T : UISubBase, new()
         {
+            AddSubUI<T>(uiRoot.transform);
+        }
+        
+        protected void AddSubUI<T>(GameObject uiRoot) where T : UISubBase, new()
+        {
+            AddSubUI<T>(uiRoot.transform);
+        }
+        
+        protected void AddSubUI<T>(Transform uiRoot) where T : UISubBase, new()
+        {
+            var instanceId = uiRoot.GetInstanceID();
+            if (HasSubUI(uiRoot))
+            {
+                Debug.LogError("禁止在某一个节点上多次添加子UI");
+                return;
+            }
+
+            var uiLogic = new T();
+            uiLogic.Load(uiRoot.gameObject);
+            if (!uiLogic.BindComponent())
+            {
+                Debug.LogError($"{typeof(T).Name} 子UI绑定组件失败");
+                return;
+            }
+            subUI.Add(instanceId, uiLogic);
+            uiLogic.Show();
         }
 
-        protected void RemoveSubUI<T>(Transform uiRoot) where T : UIBase, new()
+        protected bool HasSubUI(Transform uiRoot)
         {
-            
-        }
-
-        private void OpenAllSubUI()
-        {
-            
-        }
-
-        private void CloseAllSubUI()
-        {
-            
+            return subUI.ContainsKey(uiRoot.GetInstanceID());
         }
     #endregion
     }

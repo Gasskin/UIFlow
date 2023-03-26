@@ -91,6 +91,7 @@ public class UIComponentEditor : Editor
             var componentType = data.FindPropertyRelative(nameof(UIComponentData.componentType)).stringValue;
             var fieldName = data.FindPropertyRelative(nameof(UIComponentData.fieldName)).stringValue;
             sb.AppendLine($"        {fieldName} =  uiComponent.GetComponent<{componentType}>({i});");
+            sb.AppendLine($"        if ({fieldName} == null) return false;");
         }
         sb.AppendLine("        return true;");
         sb.AppendLine("    }");
@@ -105,9 +106,7 @@ public class UIComponentEditor : Editor
     private void GenPrefab()
     {
         var gameObject = (target as UIComponent).gameObject;
-        if (!PrefabUtility.IsAnyPrefabInstanceRoot(gameObject))
-            return;
-        if (!gameObject.name.EndsWith("_Editor"))
+        if (!PrefabUtility.IsAnyPrefabInstanceRoot(gameObject) || !gameObject.name.EndsWith("_Editor"))
         {
             Debug.LogError("仅可对_Editor结尾的Prefab操作");
             return;

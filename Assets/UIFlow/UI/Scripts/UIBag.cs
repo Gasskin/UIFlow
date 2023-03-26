@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UIFlow.UI;
 using UnityEngine;
 using UnityEngine.UI;
@@ -7,7 +5,9 @@ using UnityEngine.UI;
 public partial class UIBag : UIBase
 {
     public override UIType Layer => UIType.Normal;
-    protected override string PrefabName => "UIBag";
+    public override string PrefabName => "UIBag";
+
+    public override bool UseUIStack => true;
 
     protected override void OnShow()
     {
@@ -34,5 +34,9 @@ public partial class UIBag : UIBase
     protected override void OnClose()
     {
         Close.onClick.RemoveAllListeners();
+        for (int i = 9; i >= 0; i--)
+        {
+            Object.DestroyImmediate(Bg.transform.GetChild(i).gameObject);
+        }
     }
 }

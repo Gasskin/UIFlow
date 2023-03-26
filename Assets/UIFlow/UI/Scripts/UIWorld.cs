@@ -6,15 +6,25 @@ using UnityEngine;
 public partial class UIWorld : UIBase
 {
     public override UIType Layer => UIType.Normal;
-    protected override string PrefabName => "UIWorld";
+    public override string PrefabName => "Test/UIWorld";
+
+    public override bool UseUIStack => true;
+
+    protected override void OnLoad()
+    {
+        AddSubUI<UIMoney>(Money);
+    }
 
     protected override void OnShow()
     {
-        Name.text = uiParam as string;
-        
         Bag.onClick.AddListener((() =>
         {
             UIManager.Instance.Open<UIBag>();
         }));
+    }
+
+    protected override void OnClose()
+    {
+        Bag.onClick.RemoveAllListeners();
     }
 }

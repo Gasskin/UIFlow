@@ -4,14 +4,14 @@ using UnityEngine;
 public partial class UILogin : UIBase
 {
     public override UIType Layer => UIType.Normal;
-    protected override string PrefabName => "UILogin";
+    public override string PrefabName => "UILogin";
 
     protected override void OnShow()
     {
         Confirm.onClick.AddListener((() =>
         {
             UIManager.Instance.Close<UILogin>();
-            UIManager.Instance.Open<UIWorld>(Input.text);
+            UIManager.Instance.Open<UIWorld>();
         }));        
     }
 

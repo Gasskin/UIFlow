@@ -12,6 +12,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: fce9b4dcdae16114b9501b12dd27d93d, type: 3}
   m_Name: UIFlowConfig
   m_EditorClassIdentifier: 
+  enableDebug: 1
+  unLoadTime: 10
   genPath: UIFlow/UI/GenCode
   prefabPath: Resources
   nameSpaceUse:
