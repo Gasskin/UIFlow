@@ -6,20 +6,25 @@ using UnityEditor;
 
 #endif
 
-namespace UIFlow.Config
+namespace UIFlow.UI.Config
 {
-    public class UIFlowConfig : ScriptableObject
+    public class UIConfig : ScriptableObject
     {
 #if UNITY_EDITOR
-        [MenuItem("Assets/Create/UIFlow/Config")]
+        [MenuItem("Assets/Create/UIFlow/UIConfig")]
         public static void CreateConfig()
         {
-            var asset = Resources.Load<UIFlowConfig>("UIFlowConfig");
+            var asset = Resources.Load<UIConfig>("UIConfig");
 
             if (asset == null)
             {
-                asset = CreateInstance<UIFlowConfig>();
-                AssetDatabase.CreateAsset(asset, "Assets/UIFlowConfig.asset");
+                var select = Selection.activeObject;
+                var path = select == null
+                    ? "Assets/UIConfig.asset"
+                    : $"{AssetDatabase.GetAssetPath(select)}/UIConfig.asset";
+                
+                asset = CreateInstance<UIConfig>();
+                AssetDatabase.CreateAsset(asset, path);
                 AssetDatabase.SaveAssets();
                 AssetDatabase.Refresh();
             }

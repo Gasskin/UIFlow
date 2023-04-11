@@ -146,6 +146,21 @@ namespace UIFlow.UI
             uiLogic.Show();
         }
 
+        protected void RemoveSubUI<T>(Transform uiRoot) where T : UISubBase
+        {
+            var instanceId = uiRoot.GetInstanceID();
+            if (subUI.TryGetValue(instanceId,out var uiLogic))
+            {
+                uiLogic.Close();
+                uiLogic.UnLoad();
+                subUI.Remove(instanceId);
+            }
+            else
+            {
+                Debug.LogError($"不存在子UI {typeof(T).Name}");
+            }
+        }
+
         protected bool HasSubUI(Transform uiRoot)
         {
             return subUI.ContainsKey(uiRoot.GetInstanceID());

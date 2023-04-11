@@ -1,6 +1,6 @@
 using System.IO;
 using System.Text;
-using UIFlow.Config;
+using UIFlow.UI.Config;
 using UIFlow.UIComponent;
 using UnityEditor;
 using UnityEngine;
@@ -11,7 +11,7 @@ public class UIComponentEditor : Editor
     private SerializedProperty uiName;
     private SerializedProperty uiData;
 
-    private UIFlowConfig config;
+    private UIConfig config;
     
     private void OnEnable()
     {
@@ -24,7 +24,7 @@ public class UIComponentEditor : Editor
             serializedObject.ApplyModifiedProperties();
         }
 
-        config = Resources.Load<UIFlowConfig>("UIFlowConfig");
+        config = Resources.Load<UIConfig>("UIConfig");
     }
 
     public override void OnInspectorGUI()

@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Cysharp.Threading.Tasks;
-using UIFlow.Config;
+using UIFlow.UI.Config;
 using Unity.VisualScripting;
 using UnityEngine;
 
@@ -32,10 +32,7 @@ namespace UIFlow.UI
         private Dictionary<UIType, Stack<UIBase>> uiStack;
         private List<string> removeHelper;
 
-        private UIBase preOpen;
-        private UIBase preClose;
-
-        private UIFlowConfig config;
+        private UIConfig config;
 
 #if UNITY_EDITOR
         private bool isDebug = false;
@@ -48,7 +45,7 @@ namespace UIFlow.UI
             if (isInit)
                 return;
 
-            config = await Resources.LoadAsync<UIFlowConfig>("UIFlowConfig") as UIFlowConfig;
+            config = await Resources.LoadAsync<UIConfig>("UIConfig") as UIConfig;
             if (config == null)
             {
                 Debug.LogError("UIFlowConfig为Null");
@@ -133,40 +130,40 @@ namespace UIFlow.UI
             {
                 return;
             }
-
-            if (GUI.Button(new Rect(0, 0, 100, 40), "DEBUG"))
-            {
-                isDebug = !isDebug;
-            }
-
-            if (isDebug)
-            {
-                // var style = new GUIStyle("TextArea");
-                // style.richText = true;
-                //
-                // var rect = new Rect(0, 40, 200, 400);
-                // var str = "<size=20><color=#FF0000>Stack:</Color></size>\n";
-                // foreach (var stack in uiStack)
-                // {
-                //     str = str + $"<size=15>{stack.PrefabName}</size>" + "\n";
-                // }
-                //
-                // str = str + "<size=20><color=#00FF18>Asset:</Color></size>\n";
-                // foreach (var asset in uiPrefabAssets.Keys)
-                // {
-                //     str = str + $"<size=15>{asset}</size>" + "\n";
-                // }
-                //
-                // var curTime = Time.realtimeSinceStartup;
-                // str = str + "<size=20><color=#FFE000>WaitForUnload:</Color></size>\n";
-                // foreach (var ui in uiWaitForUnLoad.Values)
-                // {
-                //     var count = curTime - uiUnLoadCountDown[ui.PrefabName];
-                //     str = str + $"<size=15>{ui.PrefabName}</size>" + $"_{config.unLoadTime - count}\n";
-                // }
-
-                // GUI.TextArea(rect, str, style);
-            }
+            
+            // if (GUI.Button(new Rect(0, 0, 100, 40), "DEBUG"))
+            // {
+            //     isDebug = !isDebug;
+            // }
+            //
+            // if (isDebug)
+            // {
+            //     var style = new GUIStyle("TextArea");
+            //     style.richText = true;
+            //     
+            //     var rect = new Rect(0, 40, 200, 400);
+            //     var str = "<size=20><color=#FF0000>Stack:</Color></size>\n";
+            //     foreach (var stack in uiStack)
+            //     {
+            //         str = str + $"<size=15>{stack.PrefabName}</size>" + "\n";
+            //     }
+            //     
+            //     str = str + "<size=20><color=#00FF18>Asset:</Color></size>\n";
+            //     foreach (var asset in uiPrefabAssets.Keys)
+            //     {
+            //         str = str + $"<size=15>{asset}</size>" + "\n";
+            //     }
+            //     
+            //     var curTime = Time.realtimeSinceStartup;
+            //     str = str + "<size=20><color=#FFE000>WaitForUnload:</Color></size>\n";
+            //     foreach (var ui in uiWaitForUnLoad.Values)
+            //     {
+            //         var count = curTime - uiUnLoadCountDown[ui.PrefabName];
+            //         str = str + $"<size=15>{ui.PrefabName}</size>" + $"_{config.unLoadTime - count}\n";
+            //     }
+            //
+            //     GUI.TextArea(rect, str, style);
+            // }
         }
 #endif
     #endregion

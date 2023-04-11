@@ -9,14 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fce9b4dcdae16114b9501b12dd27d93d, type: 3}
-  m_Name: UIFlowConfig
+  m_Script: {fileID: 11500000, guid: 62547c04c7d842c49a98c0cfe169dd25, type: 3}
+  m_Name: RedPointConfig
   m_EditorClassIdentifier: 
-  enableDebug: 1
-  unLoadTime: 10
-  genPath: UIFlow/UI/GenCode
-  prefabPath: Resources
-  nameSpaceUse:
-  - UnityEngine.UI
-  - UnityEngine
-  - UIFlow.UIComponent
+  nodes: []
