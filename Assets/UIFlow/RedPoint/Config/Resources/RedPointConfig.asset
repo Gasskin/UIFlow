@@ -12,4 +12,67 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 62547c04c7d842c49a98c0cfe169dd25, type: 3}
   m_Name: RedPointConfig
   m_EditorClassIdentifier: 
-  nodes: []
+  nodes:
+  - name: A
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 1
+    parentId: 0
+  - name: B
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 2
+    parentId: 0
+  - name: ab
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 9
+    parentId: 1
+  - name: C
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 3
+    parentId: 0
+  - name: a
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 4
+    parentId: 1
+  - name: b
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 5
+    parentId: 2
+  - name: c
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 6
+    parentId: 3
+  - name: aa
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 7
+    parentId: 4
+  - name: aaa
+    confirm: 1
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 8
+    parentId: 7

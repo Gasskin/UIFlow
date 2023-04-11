@@ -30,6 +30,6 @@ namespace UIFlow.RedPoint
         }
 #endif
 
-        public RedPointNode[] nodes;
+        public RedPointNodeConfig[] nodes;
     }
 }
