@@ -802,3 +802,6 @@ MonoBehaviour:
   - fieldName: Money
     componentType: RectTransform
     target: {fileID: 2109740564}
+  - fieldName: Icon
+    componentType: Image
+    target: {fileID: 7863513410709881862}

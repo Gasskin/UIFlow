@@ -11,6 +11,7 @@ public partial class UIWorld
     private Text Name;
     private Button Bag;
     private RectTransform Money;
+    private Image Icon;
 
     public override bool BindComponent()
     {
@@ -31,6 +32,8 @@ public partial class UIWorld
         if (Bag == null) return false;
         Money =  uiComponent.GetComponent<RectTransform>(2);
         if (Money == null) return false;
+        Icon =  uiComponent.GetComponent<Image>(3);
+        if (Icon == null) return false;
         return true;
     }
 }

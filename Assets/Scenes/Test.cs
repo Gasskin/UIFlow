@@ -13,10 +13,9 @@ public class Test : MonoBehaviour
         UIManager.Instance.Init();
         RedPointManager.Instance.Init();
         await UniTask.DelayFrame(3);
-        RedPointManager.Instance.RefreshRedPoint(8, 2);
-        await UniTask.DelayFrame(3);
-        RedPointManager.Instance.RefreshRedPoint(9, 2);
-        // UIManager.Instance.Open<UILogin>();
+        // await UniTask.DelayFrame(3);
+        // RedPointManager.Instance.RefreshRedPoint(9, 2);
+        UIManager.Instance.Open<UILogin>();
     }
 
     // Update is called once per frame

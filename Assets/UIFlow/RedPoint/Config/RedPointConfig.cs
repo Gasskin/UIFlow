@@ -30,6 +30,10 @@ namespace UIFlow.RedPoint
         }
 #endif
 
+        [ShowName("点类型")]
+        public GameObject pointPrefab;
+        [ShowName("数字类型")]
+        public GameObject numPrefab;
         public RedPointNodeConfig[] nodes;
     }
 }

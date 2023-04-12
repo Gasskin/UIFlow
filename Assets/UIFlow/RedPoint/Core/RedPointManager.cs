@@ -19,20 +19,22 @@ namespace UIFlow.RedPoint
     public class RedPointManager : Singleton<RedPointManager>
     {
     #region 属性
+
         private RedPointConfig config;
-        private RedPointTree redPointTree;
-        private Dictionary<int, RedPoint> redPointMap;
         private Transform pool;
+
         private Queue<Transform> pointQueue;
         private Queue<Transform> numQueue;
+        private Dictionary<int, RedPoint> redPointMap;
         private Dictionary<int, Transform> redPointWatcher;
-        private Dictionary<int, Transform> redPointInstance;
-        private GameObject numAsset;
-        private GameObject pointAsset;
+        private Dictionary<int, RedPointView> redPointView;
+
         private bool isInit = false;
+
     #endregion
 
     #region 生命周期
+
         public async void Init()
         {
             if (isInit)
@@ -58,13 +60,15 @@ namespace UIFlow.RedPoint
             pointQueue = new Queue<Transform>();
             numQueue = new Queue<Transform>();
             redPointWatcher = new Dictionary<int, Transform>();
-            redPointInstance = new Dictionary<int, Transform>();
+            redPointView = new Dictionary<int, RedPointView>();
 
             isInit = true;
         }
+
     #endregion
 
     #region 接口方法
+
         /// <summary>
         /// 刷新红点树
         /// </summary>
@@ -77,6 +81,7 @@ namespace UIFlow.RedPoint
             if (redPointMap.TryGetValue(selfId, out var redPoint))
             {
                 redPoint.num += num;
+                redPoint.num = Mathf.Max(0, redPoint.num);
                 AddOrFreshRedPoint(selfId, redPoint);
                 if (redPoint.config.parentId != 0)
                 {
@@ -90,58 +95,100 @@ namespace UIFlow.RedPoint
         /// </summary>
         /// <param name="selfId">节点ID</param>
         /// <param name="target">挂载目标</param>
-        public void AddRedPointWatcher(int selfId, Transform target)
+        public void AddWatcher(int selfId, Transform target)
         {
+            if (!isInit)
+                return;
+            
             if (redPointWatcher.ContainsKey(selfId))
             {
                 Debug.LogError($"一个红点只能添加一次观察  {selfId}  {target.name}");
                 return;
             }
 
+            if (!redPointMap.TryGetValue(selfId, out var redPoint))
+            {
+                Debug.LogError($"不存在红点  {selfId}");
+                return;
+            }
+
             redPointWatcher.Add(selfId, target);
+
+            GetOrCreateRedPoint(selfId, redPoint, target);
         }
 
         /// <summary>
         /// 移除红点观察
         /// </summary>
         /// <param name="selfId">节点ID</param>
-        public void RemoveRedPointWatcher(int selfId)
+        public void RemoveWatcher(int selfId)
         {
+            if (!isInit)
+                return;
+            
             if (redPointWatcher.Remove(selfId))
             {
                 if (redPointMap.TryGetValue(selfId, out var redPoint))
                 {
-                    if (redPointInstance.TryGetValue(selfId, out var instance))
+                    if (redPointView.TryGetValue(selfId, out var view))
                     {
-                        ReCycleRedPoint(redPoint.config.redPointType, instance);
+                        redPointView.Remove(selfId);
+                        ReCycleRedPoint(redPoint.config.redPointType, view.transform);
                     }
                 }
             }
         }
+
     #endregion
 
     #region 工具方法
+
         private void AddOrFreshRedPoint(int selfId, RedPoint redPoint)
         {
-            if (redPointInstance.TryGetValue(selfId,out var instance))
+            // 已经创建过红点了
+            if (redPointView.TryGetValue(selfId, out var view))
             {
-                switch (redPoint.config.redPointType)
+                view.Refresh(redPoint.num);
+            }
+            else
+            {
+                if (redPointWatcher.TryGetValue(selfId, out var target))
                 {
-                    case RedPointType.Num:
-                        break;
-                    case RedPointType.Point:
-                        break;
+                    GetOrCreateRedPoint(selfId, redPoint, target);
+                }
+            }
+        }
+
+        private void GetOrCreateRedPoint(int selfId, RedPoint redPoint, Transform target)
+        {
+            Transform instance = null;
+
+            switch (redPoint.config.redPointType)
+            {
+                case RedPointType.Num:
+                    instance = numQueue.Count > 0 ? numQueue.Dequeue() : Instantiate(config.numPrefab).transform;
+                    break;
+                case RedPointType.Point:
+                    instance = pointQueue.Count > 0 ? pointQueue.Dequeue() : Instantiate(config.pointPrefab).transform;
+                    break;
+            }
+
+            if (instance && instance.TryGetComponent<RedPointView>(out var view))
+            {
+                instance.SetParent(target, false);
+                redPointView.Add(selfId, view);
+                view.Refresh(redPoint.num);
+
+                if (instance is RectTransform rect)
+                {
+                    rect.anchorMin = Vector2.one;
+                    rect.anchorMax = Vector2.one;
+                    rect.anchoredPosition = new Vector2(redPoint.config.offsetX, redPoint.config.offsetY);
                 }
             }
             else
             {
-                switch (redPoint.config.redPointType)
-                {
-                    case RedPointType.Num:
-                        break;
-                    case RedPointType.Point:
-                        break;
-                }
+                DestroyImmediate(instance);
             }
         }
 
@@ -158,6 +205,7 @@ namespace UIFlow.RedPoint
                     break;
             }
         }
+
     #endregion
     }
 }

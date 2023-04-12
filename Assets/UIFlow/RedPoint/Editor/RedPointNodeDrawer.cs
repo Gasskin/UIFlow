@@ -85,8 +85,10 @@ namespace UIFlow.Editor
                 rect.width /= 2;
                 rect.height = EditorGUIUtility.singleLineHeight;
                 EditorGUIUtility.labelWidth = 50;
+                if (redPointType.enumValueIndex < 0)
+                    redPointType.enumValueIndex = 0;
                 redPointType.enumValueIndex =
-                    EditorGUI.Popup(rect, "红点类型", redPointType.enumValueIndex, this.redPointTypeArr);
+                    EditorGUI.Popup(rect, "红点类型", redPointType.enumValueIndex, redPointTypeArr);
 
                 rect.x += rect.width;
                 rect.width = 50;
