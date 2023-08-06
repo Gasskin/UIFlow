@@ -7,8 +7,6 @@ public partial class UIBag : UIBase
     public override UIType Layer => UIType.Normal;
     public override string PrefabName => "UIBag";
 
-    public override bool UseUIStack => true;
-
     protected override void OnShow()
     {
         Close.onClick.AddListener((() =>

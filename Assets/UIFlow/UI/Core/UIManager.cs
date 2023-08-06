@@ -1,9 +1,7 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using Cysharp.Threading.Tasks;
 using UIFlow.UI.Config;
-using Unity.VisualScripting;
 using UnityEngine;
 
 namespace UIFlow.UI
@@ -29,14 +27,9 @@ namespace UIFlow.UI
 
         private Dictionary<string, UIBase> uiWaitForUnLoad;
         private Dictionary<string, float> uiUnLoadCountDown;
-        private Dictionary<UIType, Stack<UIBase>> uiStack;
         private List<string> removeHelper;
 
         private UIConfig config;
-
-#if UNITY_EDITOR
-        private bool isDebug = false;
-#endif
     #endregion
 
     #region 生命周期
@@ -44,7 +37,6 @@ namespace UIFlow.UI
         {
             if (isInit)
                 return;
-
             config = await Resources.LoadAsync<UIConfig>("UIConfig") as UIConfig;
             if (config == null)
             {
@@ -69,7 +61,6 @@ namespace UIFlow.UI
             uiWaitForUnLoad = new Dictionary<string, UIBase>();
             uiUnLoadCountDown = new Dictionary<string, float>();
             removeHelper = new List<string>();
-            uiStack = new Dictionary<UIType, Stack<UIBase>>();
 
             foreach (var type in Enum.GetValues(typeof(UIType)))
             {
@@ -77,7 +68,6 @@ namespace UIFlow.UI
                 if (layer != null)
                 {
                     uiLayer.Add((UIType)type, layer);
-                    uiStack[(UIType) type] = new Stack<UIBase>();
                 }
                 else
                 {
@@ -177,7 +167,7 @@ namespace UIFlow.UI
             var uiName = typeof(T).Name;
             if (uiLogics.ContainsKey(uiName))
             {
-                Debug.LogError($"禁止打开两个相同的主UI：{uiName}");
+                Debug.LogError($"UI：{uiName} 已经打开");
                 return;
             }
 
@@ -211,19 +201,6 @@ namespace UIFlow.UI
     #region 工具方法
         private void InternalOpen(string uiName, UIBase uiLogic)
         {
-            // 需要进栈
-            if (uiLogic.UseUIStack)
-            {
-                var stack = uiStack[uiLogic.Layer];
-                if (stack.Count > 0)
-                {
-                    var curUI = stack.Peek();
-                    curUI?.Close();
-                }
-
-                stack.Push(uiLogic);
-            }
-
             uiWaitForUnLoad.Remove(uiName);
             uiUnLoadCountDown.Remove(uiName);
             uiLogics.Add(uiName, uiLogic);
@@ -236,41 +213,32 @@ namespace UIFlow.UI
             uiLogics.Remove(uiName);
             uiWaitForUnLoad.Add(uiLogic.PrefabName, uiLogic);
             uiUnLoadCountDown.Add(uiLogic.PrefabName, Time.realtimeSinceStartup);
-            if (uiLogic.UseUIStack)
-            {
-                var stack = uiStack[uiLogic.Layer];
-                stack.Pop();
-                if (uiStack.Count > 0)
-                {
-                    var curUI = stack.Peek();
-                    curUI?.Show();
-                }
-            }
         }
 
         private async void CreateUI<T>(string uiName) where T : UIBase, new()
         {
             var uiLogic = new T();
+            if (!uiLayer.TryGetValue(uiLogic.Layer, out var layer))
+            {
+                Debug.LogError($"找不到UI：{uiName} 的目标层级：{uiLogic.Layer}");
+                return;
+            }
+            
             var asset = await LoadAsset(uiLogic.PrefabName);
             if (asset == null)
             {
                 return;
             }
 
-            if (!uiLayer.TryGetValue(uiLogic.Layer, out var layer))
-            {
-                Debug.LogError($"找不到UI：{uiName} 的目标层级：{uiLogic.Layer}");
-                return;
-            }
-
             var instance = Instantiate(asset, layer);
-            if (!uiLogic.Load(instance))
+            if (!uiLogic.BindComponent(instance))
             {
-                uiLogic.Unload();
+                Debug.LogError($"{uiName} BindComponent Error!");
+                DestroyImmediate(instance);
                 UnLoadAsset(uiLogic.PrefabName);
                 return;
             }
-
+            uiLogic.Load();
             InternalOpen(uiName, uiLogic);
         }
 

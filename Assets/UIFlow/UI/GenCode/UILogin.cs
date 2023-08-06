@@ -12,22 +12,26 @@ public partial class UILogin
     private Button Cancel;
     private InputField Input;
 
-    public override bool BindComponent()
+    public override bool BindComponent(GameObject instance)
     {
-        if (prefabInstance == null) 
+        if (instance == null) 
         {
             Debug.LogError("UILogin，绑定组件失败，没有实例资源");
             return false;
         }
-        var uiComponent = prefabInstance.GetComponent<UIComponent>();
+        var uiComponent = instance.GetComponent<UIComponent>();
         if (uiComponent == null)
         {
-            Debug.LogError("UILogin，绑定组件失败，没有实例资源");
+            Debug.LogError("UILogin，绑定组件失败，缺少UIComponent");
             return false;
         }
         Confirm =  uiComponent.GetComponent<Button>(0);
+        if (Confirm == null) return false;
         Cancel =  uiComponent.GetComponent<Button>(1);
+        if (Cancel == null) return false;
         Input =  uiComponent.GetComponent<InputField>(2);
+        if (Input == null) return false;
+        prefabInstance = instance;
         return true;
     }
 }

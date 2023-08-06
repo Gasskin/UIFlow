@@ -12,22 +12,26 @@ public partial class UIBag
     private RectTransform Item;
     private Button Close;
 
-    public override bool BindComponent()
+    public override bool BindComponent(GameObject instance)
     {
-        if (prefabInstance == null) 
+        if (instance == null) 
         {
             Debug.LogError("UIBag，绑定组件失败，没有实例资源");
             return false;
         }
-        var uiComponent = prefabInstance.GetComponent<UIComponent>();
+        var uiComponent = instance.GetComponent<UIComponent>();
         if (uiComponent == null)
         {
-            Debug.LogError("UIBag，绑定组件失败，没有实例资源");
+            Debug.LogError("UIBag，绑定组件失败，缺少UIComponent");
             return false;
         }
         Bg =  uiComponent.GetComponent<RectTransform>(0);
+        if (Bg == null) return false;
         Item =  uiComponent.GetComponent<RectTransform>(1);
+        if (Item == null) return false;
         Close =  uiComponent.GetComponent<Button>(2);
+        if (Close == null) return false;
+        prefabInstance = instance;
         return true;
     }
 }

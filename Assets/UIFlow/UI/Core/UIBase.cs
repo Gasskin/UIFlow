@@ -14,22 +14,20 @@ namespace UIFlow.UI
 
     #region 属性
         public bool IsOpen => canvasGroup.alpha >= 1;
-        public virtual bool UseUIStack => false;
 
         public abstract UIType Layer { get; }
         public abstract string PrefabName { get; }
     #endregion
 
     #region 生命周期
-        public virtual bool BindComponent()
+        public virtual bool BindComponent(GameObject instance)
         {
             return true;
         }
 
-        public bool Load(GameObject prefabInstance)
+        public void Load()
         {
-            this.prefabInstance = prefabInstance;
-            rectTransform = this.prefabInstance.transform as RectTransform;
+            rectTransform = prefabInstance.transform as RectTransform;
             if (rectTransform != null)
             {
                 rectTransform.anchorMin = Vector2.zero;
@@ -37,19 +35,11 @@ namespace UIFlow.UI
                 rectTransform.anchoredPosition = Vector2.one;
             }
 
-            if (!this.prefabInstance.TryGetComponent(out canvasGroup))
-            {
-                canvasGroup = this.prefabInstance.AddComponent<CanvasGroup>();
-            }
+            if (!prefabInstance.TryGetComponent(out canvasGroup))
+                canvasGroup = prefabInstance.AddComponent<CanvasGroup>();
 
             canvasGroup.alpha = 0;
-            if (!BindComponent())
-            {
-                Debug.LogError($"绑定组件失败 {PrefabName}");
-                return false;
-            }
             OnLoad();
-            return true;
         }
 
         public void Show()
@@ -62,6 +52,7 @@ namespace UIFlow.UI
             }
         }
 
+        
         public void Close()
         {
             canvasGroup.alpha = 0;
@@ -74,10 +65,6 @@ namespace UIFlow.UI
 
         public void Unload()
         {
-            foreach (var sub in subUI.Values)
-            {
-                sub.UnLoad();
-            }
             OnUnload();
             subUI.Clear();
             Object.Destroy(prefabInstance);
@@ -152,7 +139,6 @@ namespace UIFlow.UI
             if (subUI.TryGetValue(instanceId,out var uiLogic))
             {
                 uiLogic.Close();
-                uiLogic.UnLoad();
                 subUI.Remove(instanceId);
             }
             else

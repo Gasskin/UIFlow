@@ -9,8 +9,6 @@ public partial class UIWorld : UIBase
     public override UIType Layer => UIType.Normal;
     public override string PrefabName => "UIWorld";
 
-    public override bool UseUIStack => true;
-
     protected override void OnLoad()
     {
         AddSubUI<UIMoney>(Money);

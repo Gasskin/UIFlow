@@ -16,9 +16,16 @@ MonoBehaviour:
   numPrefab: {fileID: 6418360822871092592, guid: b44e345d9b698c5499ee5f21e8a4bef5, type: 3}
   nodes:
   - name: "\u5927\u4E16\u754C\u5934\u50CF"
-    confirm: 1
+    confirm: 0
     redPointType: 2
     offsetX: 0
     offsetY: 0
     selfId: 1
     parentId: 0
+  - name: a
+    confirm: 0
+    redPointType: 2
+    offsetX: 0
+    offsetY: 0
+    selfId: 9
+    parentId: 1

@@ -13,17 +13,17 @@ public partial class UIWorld
     private RectTransform Money;
     private Image Icon;
 
-    public override bool BindComponent()
+    public override bool BindComponent(GameObject instance)
     {
-        if (prefabInstance == null) 
+        if (instance == null) 
         {
             Debug.LogError("UIWorld，绑定组件失败，没有实例资源");
             return false;
         }
-        var uiComponent = prefabInstance.GetComponent<UIComponent>();
+        var uiComponent = instance.GetComponent<UIComponent>();
         if (uiComponent == null)
         {
-            Debug.LogError("UIWorld，绑定组件失败，没有实例资源");
+            Debug.LogError("UIWorld，绑定组件失败，缺少UIComponent");
             return false;
         }
         Name =  uiComponent.GetComponent<Text>(0);
@@ -34,6 +34,7 @@ public partial class UIWorld
         if (Money == null) return false;
         Icon =  uiComponent.GetComponent<Image>(3);
         if (Icon == null) return false;
+        prefabInstance = instance;
         return true;
     }
 }

@@ -13,8 +13,8 @@ public class Test : MonoBehaviour
         UIManager.Instance.Init();
         RedPointManager.Instance.Init();
         await UniTask.DelayFrame(3);
-        // await UniTask.DelayFrame(3);
-        // RedPointManager.Instance.RefreshRedPoint(9, 2);
+        await UniTask.DelayFrame(3);
+        RedPointManager.Instance.RefreshRedPoint(9, 2);
         UIManager.Instance.Open<UILogin>();
     }
 
